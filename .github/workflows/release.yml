@@ -1,0 +1,50 @@
+name: Release
+
+on:
+  push:
+    tags: ["v[0-9]+.[0-9]+.[0-9]+*"]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Verify
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v5
+
+      - name: Check the tag names the version every file names
+        run: scripts/check-version.sh "${GITHUB_REF_NAME#v}"
+
+  core:
+    name: Publish brudcast_flutter
+    needs: verify
+    permissions:
+      id-token: write
+    uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
+    with:
+      working-directory: packages/brudcast_flutter
+      environment: pub.dev
+
+  in-app:
+    name: Publish brudcast_in_app
+    needs: core
+    permissions:
+      id-token: write
+    uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
+    with:
+      working-directory: packages/brudcast_in_app
+      environment: pub.dev
+
+  push:
+    name: Publish brudcast_push
+    needs: core
+    permissions:
+      id-token: write
+    uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
+    with:
+      working-directory: packages/brudcast_push
+      environment: pub.dev

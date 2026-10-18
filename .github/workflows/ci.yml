@@ -1,0 +1,163 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  NATIVE_SDK_REF: ${{ vars.NATIVE_SDK_REF || 'v0.2.0' }}
+
+jobs:
+  dart:
+    name: Dart (Flutter ${{ matrix.flutter }})
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        flutter: ["3.47.x", "3.44.x"]
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v5
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ matrix.flutter }}
+          channel: stable
+          cache: true
+
+      - name: Check every file names the same version
+        run: scripts/check-version.sh
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Check formatting
+        run: dart format --output=none --set-exit-if-changed $(git ls-files '*.dart' | grep -v '\.g\.dart$')
+
+      - name: Check the generated channel code is current
+        run: |
+          for package in brudcast_flutter brudcast_in_app brudcast_push; do
+            (cd "packages/$package" && dart run pigeon --input pigeons/messages.dart)
+          done
+          git diff --exit-code
+
+      - name: Analyze
+        run: |
+          for dir in packages/brudcast_flutter packages/brudcast_in_app packages/brudcast_push example; do
+            (cd "$dir" && flutter analyze --fatal-infos)
+          done
+
+      - name: Run the unit tests
+        run: |
+          for package in brudcast_flutter brudcast_in_app brudcast_push; do
+            (cd "packages/$package" && flutter test)
+          done
+
+  publishable:
+    name: pub.dev readiness
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v5
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Dry-run publishing
+        run: |
+          for package in brudcast_flutter brudcast_in_app brudcast_push; do
+            (cd "packages/$package" && flutter pub publish --dry-run)
+          done
+
+      - name: Score the packages with pana
+        run: |
+          dart pub global activate pana
+          for package in brudcast_flutter brudcast_in_app brudcast_push; do
+            dart pub global run pana --no-warning --exit-code-threshold 20 "packages/$package"
+          done
+
+  android:
+    name: Android
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v5
+
+      - name: Check out the native Android SDK
+        uses: actions/checkout@v5
+        with:
+          repository: brudcast/brudcast-sdk-android
+          ref: ${{ env.NATIVE_SDK_REF }}
+          path: native-android
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v5
+
+      - name: Publish the native SDK to Maven Local
+        working-directory: native-android
+        run: ./gradlew publishToMavenLocal
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Build the example app
+        working-directory: example
+        run: flutter build apk --debug -PbrudcastMavenLocal=true
+
+      - name: Run the plugin unit tests
+        working-directory: example/android
+        run: ./gradlew -PbrudcastMavenLocal=true :brudcast_flutter:testDebugUnitTest
+
+  ios:
+    name: iOS
+    runs-on: macos-15
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v5
+
+      - name: Check out the native iOS SDK
+        uses: actions/checkout@v5
+        with:
+          repository: brudcast/brudcast-sdk-ios
+          ref: ${{ env.NATIVE_SDK_REF }}
+          path: brudcast-sdk-ios
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Build the example app with Swift Package Manager
+        working-directory: example
+        env:
+          BRUDCAST_IOS_SDK_PATH: ${{ github.workspace }}/brudcast-sdk-ios
+        run: |
+          flutter config --enable-swift-package-manager
+          flutter build ios --simulator --debug --no-codesign
