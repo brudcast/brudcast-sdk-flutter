@@ -1,5 +1,7 @@
 # Brudcast Flutter SDK
 
+![Brudcast: Reach Everyone, Every time](.github/assets/banner.svg)
+
 [![CI](https://github.com/brudcast/brudcast-sdk-flutter/actions/workflows/ci.yml/badge.svg)](https://github.com/brudcast/brudcast-sdk-flutter/actions/workflows/ci.yml)
 [![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 
