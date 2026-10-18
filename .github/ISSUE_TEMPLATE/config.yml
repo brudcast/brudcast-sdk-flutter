@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/brudcast/brudcast-sdk-flutter/security/advisories/new
+    about: Report it privately, never in a public issue.
+  - name: Documentation
+    url: https://docs.brudcast.com
+    about: Guides for setting up in-app messaging and push.
