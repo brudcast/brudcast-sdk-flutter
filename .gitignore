@@ -1,0 +1,11 @@
+.DS_Store
+.dart_tool/
+.flutter-plugins-dependencies
+build/
+pubspec.lock
+.idea/
+*.iml
+.vscode/
+example/config/*.json
+example/android/app/google-services.json
+example/ios/Runner/GoogleService-Info.plist
