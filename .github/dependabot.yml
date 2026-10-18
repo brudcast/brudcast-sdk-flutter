@@ -1,0 +1,21 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ci
+
+  - package-ecosystem: pub
+    directories:
+      - /
+      - /packages/brudcast_flutter
+      - /packages/brudcast_in_app
+      - /packages/brudcast_push
+      - /example
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: chore
+      include: scope
