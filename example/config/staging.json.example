@@ -1,0 +1,6 @@
+{
+  "BRUDCAST_PUBLISHABLE_KEY": "bpk_...",
+  "BRUDCAST_ENVIRONMENT": "staging",
+  "SAMPLE_BACKEND_URL": "",
+  "FIREBASE_ENABLED": false
+}
