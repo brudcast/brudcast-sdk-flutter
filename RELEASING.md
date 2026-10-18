@@ -37,6 +37,13 @@ Versions on pub.dev cannot be replaced. A mistake needs a new version, or a retr
   the `pub.dev` environment. Publishing uses GitHub's OIDC token, so there is no stored credential.
 - In the repository settings, create the `pub.dev` environment with required reviewers.
 
+## Exact constraints
+
+`brudcast_in_app` and `brudcast_push` depend on exactly the same `brudcast_flutter` version, and pub
+warns that the constraint is tight. It is tight on purpose: each version runs one native SDK
+version, and mixing them would put two native versions in one app. CI fails publishing checks on
+errors only, so the warning does not block a release.
+
 ## Conventions
 
 - Commits follow [Conventional Commits](https://www.conventionalcommits.org). A change that breaks

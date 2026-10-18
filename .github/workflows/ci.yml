@@ -81,7 +81,12 @@ jobs:
       - name: Dry-run publishing
         run: |
           for package in brudcast_flutter brudcast_in_app brudcast_push; do
-            (cd "packages/$package" && flutter pub publish --dry-run)
+            output="$(cd "packages/$package" && flutter pub publish --dry-run 2>&1 || true)"
+            echo "$output"
+            if echo "$output" | grep -q "found the following error"; then
+              echo "::error::$package fails pub.dev validation"
+              exit 1
+            fi
           done
 
       - name: Score the packages with pana
