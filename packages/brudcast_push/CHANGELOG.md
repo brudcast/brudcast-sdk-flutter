@@ -5,7 +5,7 @@ All notable changes to this package are recorded here. The format follows
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Its version is the version of the
 native Brudcast SDKs it runs. Before 1.0, a minor release may change the public API.
 
-## [0.2.0] - Unreleased
+## [0.2.0] - 2026-10-18
 
 ### Added
 
