@@ -9,22 +9,14 @@ import 'dart:typed_data' show Float64List, Int32List, Int64List;
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart' show immutable, protected, visibleForTesting;
 
-Object? _extractReplyValueOrThrow(
-    List<Object?>? replyList,
-    String channelName, {
-    required bool isNullValid,
-}) {
+Object? _extractReplyValueOrThrow(List<Object?>? replyList, String channelName, {required bool isNullValid}) {
   if (replyList == null) {
     throw PlatformException(
       code: 'channel-error',
       message: 'Unable to establish connection on channel: "$channelName".',
     );
   } else if (replyList.length > 1) {
-    throw PlatformException(
-      code: replyList[0]! as String,
-      message: replyList[1] as String?,
-      details: replyList[2],
-    );
+    throw PlatformException(code: replyList[0]! as String, message: replyList[1] as String?, details: replyList[2]);
   } else if (!isNullValid && (replyList.isNotEmpty && replyList[0] == null)) {
     throw PlatformException(
       code: 'null-error',
@@ -33,7 +25,6 @@ Object? _extractReplyValueOrThrow(
   }
   return replyList.firstOrNull;
 }
-
 
 List<Object?> wrapResponse({Object? result, PlatformException? error, bool empty = false}) {
   if (empty) {
@@ -44,6 +35,7 @@ List<Object?> wrapResponse({Object? result, PlatformException? error, bool empty
   }
   return <Object?>[error.code, error.message, error.details];
 }
+
 bool _deepEquals(Object? a, Object? b) {
   if (identical(a, b)) {
     return true;
@@ -55,9 +47,7 @@ bool _deepEquals(Object? a, Object? b) {
     return a == b;
   }
   if (a is List && b is List) {
-    return a.length == b.length &&
-        a.indexed
-            .every(((int, dynamic) item) => _deepEquals(item.$2, b[item.$1]));
+    return a.length == b.length && a.indexed.every(((int, dynamic) item) => _deepEquals(item.$2, b[item.$1]));
   }
   if (a is Map && b is Map) {
     if (a.length != b.length) {
@@ -106,54 +96,20 @@ int _deepHash(Object? value) {
   return value.hashCode;
 }
 
+enum PlatformEnvironmentKind { production, staging, uat, development, local, custom }
 
-enum PlatformEnvironmentKind {
-  production,
-  staging,
-  uat,
-  development,
-  local,
-  custom;
-}
+enum PlatformLogLevel { verbose, debug, info, warning, error, none }
 
-enum PlatformLogLevel {
-  verbose,
-  debug,
-  info,
-  warning,
-  error,
-  none;
-}
+enum PlatformAppearance { system, light, dark }
 
-enum PlatformAppearance {
-  system,
-  light,
-  dark;
-}
+enum PlatformActionKind { deeplink, url, customEvent }
 
-enum PlatformActionKind {
-  deeplink,
-  url,
-  customEvent;
-}
+enum PlatformActionSource { inApp, push }
 
-enum PlatformActionSource {
-  inApp,
-  push;
-}
-
-enum PlatformActionResult {
-  handled,
-  useDefault;
-}
+enum PlatformActionResult { handled, useDefault }
 
 class PlatformEnvironment {
-  PlatformEnvironment({
-    required this.kind,
-    this.androidHost,
-    this.port,
-    this.baseUrl,
-  });
+  PlatformEnvironment({required this.kind, this.androidHost, this.port, this.baseUrl});
 
   PlatformEnvironmentKind kind;
 
@@ -164,16 +120,12 @@ class PlatformEnvironment {
   String? baseUrl;
 
   List<Object?> _toList() {
-    return <Object?>[
-      kind,
-      androidHost,
-      port,
-      baseUrl,
-    ];
+    return <Object?>[kind, androidHost, port, baseUrl];
   }
 
   Object encode() {
-    return _toList();  }
+    return _toList();
+  }
 
   static PlatformEnvironment decode(Object result) {
     result as List<Object?>;
@@ -194,7 +146,10 @@ class PlatformEnvironment {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(kind, other.kind) && _deepEquals(androidHost, other.androidHost) && _deepEquals(port, other.port) && _deepEquals(baseUrl, other.baseUrl);
+    return _deepEquals(kind, other.kind) &&
+        _deepEquals(androidHost, other.androidHost) &&
+        _deepEquals(port, other.port) &&
+        _deepEquals(baseUrl, other.baseUrl);
   }
 
   @override
@@ -233,19 +188,12 @@ class PlatformOptions {
   String wrapperVersion;
 
   List<Object?> _toList() {
-    return <Object?>[
-      environment,
-      logLevel,
-      appearance,
-      accentColor,
-      modules,
-      appGroupIdentifier,
-      wrapperVersion,
-    ];
+    return <Object?>[environment, logLevel, appearance, accentColor, modules, appGroupIdentifier, wrapperVersion];
   }
 
   Object encode() {
-    return _toList();  }
+    return _toList();
+  }
 
   static PlatformOptions decode(Object result) {
     result as List<Object?>;
@@ -269,7 +217,13 @@ class PlatformOptions {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(environment, other.environment) && _deepEquals(logLevel, other.logLevel) && _deepEquals(appearance, other.appearance) && _deepEquals(accentColor, other.accentColor) && _deepEquals(modules, other.modules) && _deepEquals(appGroupIdentifier, other.appGroupIdentifier) && _deepEquals(wrapperVersion, other.wrapperVersion);
+    return _deepEquals(environment, other.environment) &&
+        _deepEquals(logLevel, other.logLevel) &&
+        _deepEquals(appearance, other.appearance) &&
+        _deepEquals(accentColor, other.accentColor) &&
+        _deepEquals(modules, other.modules) &&
+        _deepEquals(appGroupIdentifier, other.appGroupIdentifier) &&
+        _deepEquals(wrapperVersion, other.wrapperVersion);
   }
 
   @override
@@ -283,14 +237,7 @@ class PlatformOptions {
 }
 
 class PlatformTraits {
-  PlatformTraits({
-    this.email,
-    this.phone,
-    this.firstName,
-    this.lastName,
-    this.language,
-    this.timezone,
-  });
+  PlatformTraits({this.email, this.phone, this.firstName, this.lastName, this.language, this.timezone});
 
   String? email;
 
@@ -305,18 +252,12 @@ class PlatformTraits {
   String? timezone;
 
   List<Object?> _toList() {
-    return <Object?>[
-      email,
-      phone,
-      firstName,
-      lastName,
-      language,
-      timezone,
-    ];
+    return <Object?>[email, phone, firstName, lastName, language, timezone];
   }
 
   Object encode() {
-    return _toList();  }
+    return _toList();
+  }
 
   static PlatformTraits decode(Object result) {
     result as List<Object?>;
@@ -339,7 +280,12 @@ class PlatformTraits {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(email, other.email) && _deepEquals(phone, other.phone) && _deepEquals(firstName, other.firstName) && _deepEquals(lastName, other.lastName) && _deepEquals(language, other.language) && _deepEquals(timezone, other.timezone);
+    return _deepEquals(email, other.email) &&
+        _deepEquals(phone, other.phone) &&
+        _deepEquals(firstName, other.firstName) &&
+        _deepEquals(lastName, other.lastName) &&
+        _deepEquals(language, other.language) &&
+        _deepEquals(timezone, other.timezone);
   }
 
   @override
@@ -378,19 +324,12 @@ class PlatformAction {
   bool verified;
 
   List<Object?> _toList() {
-    return <Object?>[
-      kind,
-      value,
-      opensInApp,
-      source,
-      messageId,
-      buttonId,
-      verified,
-    ];
+    return <Object?>[kind, value, opensInApp, source, messageId, buttonId, verified];
   }
 
   Object encode() {
-    return _toList();  }
+    return _toList();
+  }
 
   static PlatformAction decode(Object result) {
     result as List<Object?>;
@@ -414,7 +353,13 @@ class PlatformAction {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(kind, other.kind) && _deepEquals(value, other.value) && _deepEquals(opensInApp, other.opensInApp) && _deepEquals(source, other.source) && _deepEquals(messageId, other.messageId) && _deepEquals(buttonId, other.buttonId) && _deepEquals(verified, other.verified);
+    return _deepEquals(kind, other.kind) &&
+        _deepEquals(value, other.value) &&
+        _deepEquals(opensInApp, other.opensInApp) &&
+        _deepEquals(source, other.source) &&
+        _deepEquals(messageId, other.messageId) &&
+        _deepEquals(buttonId, other.buttonId) &&
+        _deepEquals(verified, other.verified);
   }
 
   @override
@@ -427,7 +372,6 @@ class PlatformAction {
   }
 }
 
-
 class _PigeonCodec extends StandardMessageCodec {
   const _PigeonCodec();
   @override
@@ -435,34 +379,34 @@ class _PigeonCodec extends StandardMessageCodec {
     if (value is int) {
       buffer.putUint8(4);
       buffer.putInt64(value);
-    }    else if (value is PlatformEnvironmentKind) {
+    } else if (value is PlatformEnvironmentKind) {
       buffer.putUint8(129);
       writeValue(buffer, value.index);
-    }    else if (value is PlatformLogLevel) {
+    } else if (value is PlatformLogLevel) {
       buffer.putUint8(130);
       writeValue(buffer, value.index);
-    }    else if (value is PlatformAppearance) {
+    } else if (value is PlatformAppearance) {
       buffer.putUint8(131);
       writeValue(buffer, value.index);
-    }    else if (value is PlatformActionKind) {
+    } else if (value is PlatformActionKind) {
       buffer.putUint8(132);
       writeValue(buffer, value.index);
-    }    else if (value is PlatformActionSource) {
+    } else if (value is PlatformActionSource) {
       buffer.putUint8(133);
       writeValue(buffer, value.index);
-    }    else if (value is PlatformActionResult) {
+    } else if (value is PlatformActionResult) {
       buffer.putUint8(134);
       writeValue(buffer, value.index);
-    }    else if (value is PlatformEnvironment) {
+    } else if (value is PlatformEnvironment) {
       buffer.putUint8(135);
       writeValue(buffer, value.encode());
-    }    else if (value is PlatformOptions) {
+    } else if (value is PlatformOptions) {
       buffer.putUint8(136);
       writeValue(buffer, value.encode());
-    }    else if (value is PlatformTraits) {
+    } else if (value is PlatformTraits) {
       buffer.putUint8(137);
       writeValue(buffer, value.encode());
-    }    else if (value is PlatformAction) {
+    } else if (value is PlatformAction) {
       buffer.putUint8(138);
       writeValue(buffer, value.encode());
     } else {
@@ -509,21 +453,18 @@ class BrudcastHostApi {
   /// Constructor for [BrudcastHostApi]. The [binaryMessenger] named argument is
   /// available for dependency injection. If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
-  BrudcastHostApi({
-      BinaryMessenger? binaryMessenger, 
-      String messageChannelSuffix = '', 
-      })
-      : pigeonVar_binaryMessenger = binaryMessenger,
-        pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+  BrudcastHostApi({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
+    : pigeonVar_binaryMessenger = binaryMessenger,
+      pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
 
   final BinaryMessenger? pigeonVar_binaryMessenger;
   static const MessageCodec<Object?> pigeonChannelCodec = _PigeonCodec();
 
   final String pigeonVar_messageChannelSuffix;
 
-
   Future<void> initialize(String publishableKey, PlatformOptions options) async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.brudcast_flutter.BrudcastHostApi.initialize$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.brudcast_flutter.BrudcastHostApi.initialize$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -532,16 +473,12 @@ class BrudcastHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[publishableKey, options]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
-    _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: true,
-    )
-    ;
+    _extractReplyValueOrThrow(pigeonVar_replyList, pigeonVar_channelName, isNullValid: true);
   }
 
   Future<void> identify(String externalId, String? userHash, PlatformTraits? traits) async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.brudcast_flutter.BrudcastHostApi.identify$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.brudcast_flutter.BrudcastHostApi.identify$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -550,16 +487,12 @@ class BrudcastHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[externalId, userHash, traits]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
-    _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: true,
-    )
-    ;
+    _extractReplyValueOrThrow(pigeonVar_replyList, pigeonVar_channelName, isNullValid: true);
   }
 
   Future<void> reset() async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.brudcast_flutter.BrudcastHostApi.reset$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.brudcast_flutter.BrudcastHostApi.reset$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -568,16 +501,12 @@ class BrudcastHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
-    _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: true,
-    )
-    ;
+    _extractReplyValueOrThrow(pigeonVar_replyList, pigeonVar_channelName, isNullValid: true);
   }
 
   Future<void> track(String name, Map<String, Object?> properties) async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.brudcast_flutter.BrudcastHostApi.track$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.brudcast_flutter.BrudcastHostApi.track$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -586,16 +515,12 @@ class BrudcastHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[name, properties]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
-    _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: true,
-    )
-    ;
+    _extractReplyValueOrThrow(pigeonVar_replyList, pigeonVar_channelName, isNullValid: true);
   }
 
   Future<void> screen(String name, Map<String, Object?> properties) async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.brudcast_flutter.BrudcastHostApi.screen$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.brudcast_flutter.BrudcastHostApi.screen$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -604,16 +529,12 @@ class BrudcastHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[name, properties]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
-    _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: true,
-    )
-    ;
+    _extractReplyValueOrThrow(pigeonVar_replyList, pigeonVar_channelName, isNullValid: true);
   }
 
   Future<void> setOptedOut(bool optedOut) async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.brudcast_flutter.BrudcastHostApi.setOptedOut$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.brudcast_flutter.BrudcastHostApi.setOptedOut$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -622,16 +543,12 @@ class BrudcastHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[optedOut]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
-    _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: true,
-    )
-    ;
+    _extractReplyValueOrThrow(pigeonVar_replyList, pigeonVar_channelName, isNullValid: true);
   }
 
   Future<void> setTrackingEnabled(bool enabled) async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.brudcast_flutter.BrudcastHostApi.setTrackingEnabled$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.brudcast_flutter.BrudcastHostApi.setTrackingEnabled$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -640,16 +557,12 @@ class BrudcastHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[enabled]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
-    _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: true,
-    )
-    ;
+    _extractReplyValueOrThrow(pigeonVar_replyList, pigeonVar_channelName, isNullValid: true);
   }
 
   Future<void> flush() async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.brudcast_flutter.BrudcastHostApi.flush$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.brudcast_flutter.BrudcastHostApi.flush$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -658,16 +571,12 @@ class BrudcastHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
-    _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: true,
-    )
-    ;
+    _extractReplyValueOrThrow(pigeonVar_replyList, pigeonVar_channelName, isNullValid: true);
   }
 
   Future<void> setActionHandlerEnabled(bool enabled) async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.brudcast_flutter.BrudcastHostApi.setActionHandlerEnabled$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.brudcast_flutter.BrudcastHostApi.setActionHandlerEnabled$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -676,16 +585,12 @@ class BrudcastHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[enabled]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
-    _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: true,
-    )
-    ;
+    _extractReplyValueOrThrow(pigeonVar_replyList, pigeonVar_channelName, isNullValid: true);
   }
 
   Future<String?> deviceId() async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.brudcast_flutter.BrudcastHostApi.deviceId$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.brudcast_flutter.BrudcastHostApi.deviceId$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -695,11 +600,10 @@ class BrudcastHostApi {
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: true,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: true,
+    );
     return pigeonVar_replyValue as String?;
   }
 }
@@ -709,16 +613,14 @@ abstract class BrudcastFlutterApi {
 
   Future<PlatformActionResult> handleAction(PlatformAction action);
 
-  static void setUp(BrudcastFlutterApi? api, {
-    BinaryMessenger? binaryMessenger, 
-    String messageChannelSuffix = '',
-  }) 
-{
+  static void setUp(BrudcastFlutterApi? api, {BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''}) {
     messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.brudcast_flutter.BrudcastFlutterApi.handleAction$messageChannelSuffix', pigeonChannelCodec,
-          binaryMessenger: binaryMessenger);
+        'dev.flutter.pigeon.brudcast_flutter.BrudcastFlutterApi.handleAction$messageChannelSuffix',
+        pigeonChannelCodec,
+        binaryMessenger: binaryMessenger,
+      );
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -730,8 +632,10 @@ abstract class BrudcastFlutterApi {
             return wrapResponse(result: output);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          }          catch (e) {
-            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          } catch (e) {
+            return wrapResponse(
+              error: PlatformException(code: 'error', message: e.toString()),
+            );
           }
         });
       }

@@ -9,22 +9,14 @@ import 'dart:typed_data' show Float64List, Int32List, Int64List;
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart' show immutable, protected, visibleForTesting;
 
-Object? _extractReplyValueOrThrow(
-    List<Object?>? replyList,
-    String channelName, {
-    required bool isNullValid,
-}) {
+Object? _extractReplyValueOrThrow(List<Object?>? replyList, String channelName, {required bool isNullValid}) {
   if (replyList == null) {
     throw PlatformException(
       code: 'channel-error',
       message: 'Unable to establish connection on channel: "$channelName".',
     );
   } else if (replyList.length > 1) {
-    throw PlatformException(
-      code: replyList[0]! as String,
-      message: replyList[1] as String?,
-      details: replyList[2],
-    );
+    throw PlatformException(code: replyList[0]! as String, message: replyList[1] as String?, details: replyList[2]);
   } else if (!isNullValid && (replyList.isNotEmpty && replyList[0] == null)) {
     throw PlatformException(
       code: 'null-error',
@@ -33,7 +25,6 @@ Object? _extractReplyValueOrThrow(
   }
   return replyList.firstOrNull;
 }
-
 
 List<Object?> wrapResponse({Object? result, PlatformException? error, bool empty = false}) {
   if (empty) {
@@ -44,6 +35,7 @@ List<Object?> wrapResponse({Object? result, PlatformException? error, bool empty
   }
   return <Object?>[error.code, error.message, error.details];
 }
+
 bool _deepEquals(Object? a, Object? b) {
   if (identical(a, b)) {
     return true;
@@ -55,9 +47,7 @@ bool _deepEquals(Object? a, Object? b) {
     return a == b;
   }
   if (a is List && b is List) {
-    return a.length == b.length &&
-        a.indexed
-            .every(((int, dynamic) item) => _deepEquals(item.$2, b[item.$1]));
+    return a.length == b.length && a.indexed.every(((int, dynamic) item) => _deepEquals(item.$2, b[item.$1]));
   }
   if (a is Map && b is Map) {
     if (a.length != b.length) {
@@ -106,18 +96,9 @@ int _deepHash(Object? value) {
   return value.hashCode;
 }
 
+enum PlatformPushPermission { notDetermined, denied, authorized, provisional }
 
-enum PlatformPushPermission {
-  notDetermined,
-  denied,
-  authorized,
-  provisional;
-}
-
-enum PlatformNotificationDecision {
-  show,
-  suppress;
-}
+enum PlatformNotificationDecision { show, suppress }
 
 class PlatformPushNotification {
   PlatformPushNotification({
@@ -148,20 +129,12 @@ class PlatformPushNotification {
   Map<String, String> data;
 
   List<Object?> _toList() {
-    return <Object?>[
-      messageId,
-      campaignId,
-      applicationId,
-      title,
-      body,
-      imageUrl,
-      clickUrl,
-      data,
-    ];
+    return <Object?>[messageId, campaignId, applicationId, title, body, imageUrl, clickUrl, data];
   }
 
   Object encode() {
-    return _toList();  }
+    return _toList();
+  }
 
   static PlatformPushNotification decode(Object result) {
     result as List<Object?>;
@@ -186,7 +159,14 @@ class PlatformPushNotification {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(messageId, other.messageId) && _deepEquals(campaignId, other.campaignId) && _deepEquals(applicationId, other.applicationId) && _deepEquals(title, other.title) && _deepEquals(body, other.body) && _deepEquals(imageUrl, other.imageUrl) && _deepEquals(clickUrl, other.clickUrl) && _deepEquals(data, other.data);
+    return _deepEquals(messageId, other.messageId) &&
+        _deepEquals(campaignId, other.campaignId) &&
+        _deepEquals(applicationId, other.applicationId) &&
+        _deepEquals(title, other.title) &&
+        _deepEquals(body, other.body) &&
+        _deepEquals(imageUrl, other.imageUrl) &&
+        _deepEquals(clickUrl, other.clickUrl) &&
+        _deepEquals(data, other.data);
   }
 
   @override
@@ -199,7 +179,6 @@ class PlatformPushNotification {
   }
 }
 
-
 class _PigeonCodec extends StandardMessageCodec {
   const _PigeonCodec();
   @override
@@ -207,13 +186,13 @@ class _PigeonCodec extends StandardMessageCodec {
     if (value is int) {
       buffer.putUint8(4);
       buffer.putInt64(value);
-    }    else if (value is PlatformPushPermission) {
+    } else if (value is PlatformPushPermission) {
       buffer.putUint8(129);
       writeValue(buffer, value.index);
-    }    else if (value is PlatformNotificationDecision) {
+    } else if (value is PlatformNotificationDecision) {
       buffer.putUint8(130);
       writeValue(buffer, value.index);
-    }    else if (value is PlatformPushNotification) {
+    } else if (value is PlatformPushNotification) {
       buffer.putUint8(131);
       writeValue(buffer, value.encode());
     } else {
@@ -244,21 +223,18 @@ class PushHostApi {
   /// Constructor for [PushHostApi]. The [binaryMessenger] named argument is
   /// available for dependency injection. If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
-  PushHostApi({
-      BinaryMessenger? binaryMessenger, 
-      String messageChannelSuffix = '', 
-      })
-      : pigeonVar_binaryMessenger = binaryMessenger,
-        pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+  PushHostApi({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
+    : pigeonVar_binaryMessenger = binaryMessenger,
+      pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
 
   final BinaryMessenger? pigeonVar_binaryMessenger;
   static const MessageCodec<Object?> pigeonChannelCodec = _PigeonCodec();
 
   final String pigeonVar_messageChannelSuffix;
 
-
   Future<void> setToken(String token) async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.brudcast_push.PushHostApi.setToken$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.brudcast_push.PushHostApi.setToken$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -267,16 +243,12 @@ class PushHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[token]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
-    _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: true,
-    )
-    ;
+    _extractReplyValueOrThrow(pigeonVar_replyList, pigeonVar_channelName, isNullValid: true);
   }
 
   Future<PlatformPushPermission> requestPermission(bool provisional) async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.brudcast_push.PushHostApi.requestPermission$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.brudcast_push.PushHostApi.requestPermission$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -286,16 +258,16 @@ class PushHostApi {
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: false,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    );
     return pigeonVar_replyValue! as PlatformPushPermission;
   }
 
   Future<void> setNotificationHandlerEnabled(bool enabled) async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.brudcast_push.PushHostApi.setNotificationHandlerEnabled$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.brudcast_push.PushHostApi.setNotificationHandlerEnabled$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -304,16 +276,12 @@ class PushHostApi {
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[enabled]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
-    _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: true,
-    )
-    ;
+    _extractReplyValueOrThrow(pigeonVar_replyList, pigeonVar_channelName, isNullValid: true);
   }
 
   Future<bool> handleForegroundMessage(Map<String, String> data, String? title, String? body, String? imageUrl) async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.brudcast_push.PushHostApi.handleForegroundMessage$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.brudcast_push.PushHostApi.handleForegroundMessage$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -323,11 +291,10 @@ class PushHostApi {
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: false,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    );
     return pigeonVar_replyValue! as bool;
   }
 }
@@ -337,16 +304,14 @@ abstract class PushFlutterApi {
 
   Future<PlatformNotificationDecision> handleNotification(PlatformPushNotification notification);
 
-  static void setUp(PushFlutterApi? api, {
-    BinaryMessenger? binaryMessenger, 
-    String messageChannelSuffix = '',
-  }) 
-{
+  static void setUp(PushFlutterApi? api, {BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''}) {
     messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
     {
       final pigeonVar_channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.brudcast_push.PushFlutterApi.handleNotification$messageChannelSuffix', pigeonChannelCodec,
-          binaryMessenger: binaryMessenger);
+        'dev.flutter.pigeon.brudcast_push.PushFlutterApi.handleNotification$messageChannelSuffix',
+        pigeonChannelCodec,
+        binaryMessenger: binaryMessenger,
+      );
       if (api == null) {
         pigeonVar_channel.setMessageHandler(null);
       } else {
@@ -358,8 +323,10 @@ abstract class PushFlutterApi {
             return wrapResponse(result: output);
           } on PlatformException catch (e) {
             return wrapResponse(error: e);
-          }          catch (e) {
-            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          } catch (e) {
+            return wrapResponse(
+              error: PlatformException(code: 'error', message: e.toString()),
+            );
           }
         });
       }
@@ -373,14 +340,15 @@ abstract class PushFlutterApi {
 /// not be called multiple times for the same `instanceName`. To deliver
 /// events to multiple listeners, call this method once and listen to the
 /// returned broadcast stream multiple times instead.
-Stream<PlatformPushPermission> permissionChanges( {String instanceName = ''}) {
+Stream<PlatformPushPermission> permissionChanges({String instanceName = ''}) {
   if (instanceName.isNotEmpty) {
     instanceName = '.$instanceName';
   }
-  final EventChannel permissionChangesChannel =
-      EventChannel('dev.flutter.pigeon.brudcast_push.PushEvents.permissionChanges$instanceName', pigeonMethodCodec);
+  final EventChannel permissionChangesChannel = EventChannel(
+    'dev.flutter.pigeon.brudcast_push.PushEvents.permissionChanges$instanceName',
+    pigeonMethodCodec,
+  );
   return permissionChangesChannel.receiveBroadcastStream().map((dynamic event) {
     return event as PlatformPushPermission;
   });
 }
-    
