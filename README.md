@@ -17,7 +17,8 @@ queue and triggers stay native, and Dart forwards calls to them.
 | [`brudcast_push`](packages/brudcast_push)       | [![pub](https://img.shields.io/pub/v/brudcast_push.svg)](https://pub.dev/packages/brudcast_push)        | Push: the FCM token from `firebase_messaging`, permission, foreground display |
 
 Each package is a plain Flutter plugin with its own native dependency, so a push-only app never
-ships the in-app renderer. The packages share one version with the native SDKs they run.
+ships the in-app renderer. The packages share one version, and each release names the native SDK
+version it runs.
 
 Start with the [`brudcast_flutter` README](packages/brudcast_flutter/README.md).
 
