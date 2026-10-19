@@ -132,8 +132,8 @@ Flutter tiles from `title`, `preview` and `thumbnailUrl` for the list.
 
 ## Additional information
 
-- **Versions.** Keep this package on the same version as `brudcast_flutter`; each version runs the
-  native SDKs of the same number.
+- **Versions.** Keep this package on the same version as `brudcast_flutter`. The changelog names
+  the native SDK version each release runs.
 - **Example.** A complete app is in
   [`example`](https://github.com/brudcast/brudcast-sdk-flutter/tree/main/example).
 - **Documentation:** [docs.brudcast.com](https://docs.brudcast.com).

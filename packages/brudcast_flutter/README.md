@@ -145,9 +145,8 @@ Brudcast.disableTracking(); // no events at all, for consent frameworks
 
 ## Additional information
 
-- **Versions.** The package version is the version of the native SDKs it runs: 0.2.0 runs the
-  Android and iOS SDKs 0.2.0. Keep `brudcast_flutter`, `brudcast_in_app` and `brudcast_push` on
-  the same version.
+- **Versions.** Keep `brudcast_flutter`, `brudcast_in_app` and `brudcast_push` on the same version.
+  The changelog names the native Android and iOS SDK version each release runs.
 - **Privacy.** The SDK collects a random device id, the user id you pass, the traits you pass, and
   interactions with messages. Nothing is shared with third parties. Requests carry
   `BrudcastSDK-Flutter/<version>` in their `User-Agent`.

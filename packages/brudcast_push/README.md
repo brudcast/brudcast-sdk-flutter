@@ -122,8 +122,8 @@ The handler has two seconds to answer, after which the notification shows. On iO
 
 ## Additional information
 
-- **Versions.** Keep this package on the same version as `brudcast_flutter`; each version runs the
-  native SDKs of the same number.
+- **Versions.** Keep this package on the same version as `brudcast_flutter`. The changelog names
+  the native SDK version each release runs.
 - **Example.** A complete app, with the whole `firebase_messaging` wiring, is in
   [`example`](https://github.com/brudcast/brudcast-sdk-flutter/tree/main/example).
 - **Documentation:** [docs.brudcast.com](https://docs.brudcast.com).
