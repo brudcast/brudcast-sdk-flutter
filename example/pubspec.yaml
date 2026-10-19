@@ -13,8 +13,8 @@ dependencies:
   brudcast_flutter: 0.2.2
   brudcast_in_app: 0.2.2
   brudcast_push: 0.2.2
-  firebase_core: ^4.0.0
-  firebase_messaging: ^16.0.0
+  firebase_core: ^5.0.0
+  firebase_messaging: ^17.0.0
   flutter:
     sdk: flutter
   http: ^1.2.0
