@@ -24,7 +24,7 @@ jobs:
 
     steps:
       - name: Check out the code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -67,7 +67,7 @@ jobs:
 
     steps:
       - name: Check out the code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -109,10 +109,10 @@ jobs:
 
     steps:
       - name: Check out the code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       - name: Check out the native Android SDK
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           repository: brudcast/brudcast-sdk-android
           ref: ${{ env.NATIVE_SDK_REF }}
@@ -151,10 +151,10 @@ jobs:
 
     steps:
       - name: Check out the code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       - name: Check out the native iOS SDK
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           repository: brudcast/brudcast-sdk-ios
           ref: ${{ env.NATIVE_SDK_REF }}
