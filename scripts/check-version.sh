@@ -52,7 +52,11 @@ if [ -n "${1:-}" ]; then
   done
 fi
 for package in brudcast_in_app brudcast_push; do
-  check "The brudcast_flutter constraint in packages/$package/pubspec.yaml" "$(sed -n 's/^  brudcast_flutter: *//p' "packages/$package/pubspec.yaml")"
+  constraint="$(sed -n 's/^  brudcast_flutter: *//p' "packages/$package/pubspec.yaml")"
+  if [ "$constraint" != "^$expected" ]; then
+    echo "::error::The brudcast_flutter constraint in packages/$package/pubspec.yaml is ${constraint:-missing}, but the release needs ^$expected"
+    mismatch=1
+  fi
 done
 
 if [ "$mismatch" -ne 0 ]; then

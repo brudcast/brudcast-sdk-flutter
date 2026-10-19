@@ -8,8 +8,8 @@ own. Pushing a `v<version>` tag runs `.github/workflows/release.yml`.
 The package version and the native SDK version are separate:
 
 - **The package version** follows [Semantic Versioning](https://semver.org) for the Dart API and
-  the packaging. All three packages share it, and `brudcast_in_app` and `brudcast_push` require the
-  exact `brudcast_flutter` version.
+  the packaging. All three packages share it, and `brudcast_in_app` and `brudcast_push` require
+  `brudcast_flutter` at `^` the same version.
 - **The native SDK version** is `brudcastSdkVersion` in each `android/build.gradle.kts` and `exact:`
   in each `ios/<package>/Package.swift`. All three packages pin the same one, and
   `scripts/check-version.sh` fails when they disagree.
@@ -54,12 +54,16 @@ Versions on pub.dev cannot be replaced. A mistake needs a new version, or a retr
   the `pub.dev` environment. Publishing uses GitHub's OIDC token, so there is no stored credential.
 - In the repository settings, create the `pub.dev` environment with required reviewers.
 
-## Exact constraints
+## Constraints between the packages
 
-`brudcast_in_app` and `brudcast_push` depend on exactly the same `brudcast_flutter` version, and pub
-warns that the constraint is tight. It is tight on purpose: each version pins one native SDK
-version, and mixing them could put two native versions in one app. CI fails publishing checks on
-errors only, so the warning does not block a release.
+`brudcast_in_app` and `brudcast_push` depend on `brudcast_flutter: ^<version>`, which before 1.0
+allows later patch versions of the same minor version. That is enough to keep one native SDK
+version in an app: moving to a new native version always takes at least a minor version, and the
+caret never crosses one. An exact constraint would also work for that, but pub warns about it, and
+the publish workflow fails on any warning.
+
+CI's **pub.dev readiness** job runs the same dry run and fails on warnings too, so a pull request
+catches what would fail the publish.
 
 ## Conventions
 
