@@ -50,9 +50,9 @@ or in `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  brudcast_flutter: ^0.2.1
-  brudcast_in_app: ^0.2.1
-  brudcast_push: ^0.2.1
+  brudcast_flutter: ^0.2.2
+  brudcast_in_app: ^0.2.2
+  brudcast_push: ^0.2.2
 ```
 
 The native iOS SDK ships only as a Swift package, so turn on Flutter's Swift Package Manager

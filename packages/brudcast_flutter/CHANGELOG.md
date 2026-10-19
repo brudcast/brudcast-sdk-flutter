@@ -5,6 +5,14 @@ All notable changes to this package are recorded here. The format follows
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html). Each release names the native
 Brudcast SDK version it runs. Before 1.0, a minor release may change the public API.
 
+## [0.2.2] - 2026-10-19
+
+### Changed
+
+- Released with `brudcast_in_app` and `brudcast_push` 0.2.2, which now accept later
+  `brudcast_flutter` patch versions. No changes to this package. It runs the native Android and
+  iOS SDKs 0.2.0.
+
 ## [0.2.1] - 2026-10-19
 
 ### Changed

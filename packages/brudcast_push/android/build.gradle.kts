@@ -1,5 +1,5 @@
 group = "com.brudcast.flutter"
-version = "0.2.1"
+version = "0.2.2"
 
 val brudcastSdkVersion = "0.2.0"
 
