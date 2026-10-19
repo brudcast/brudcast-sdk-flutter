@@ -37,8 +37,8 @@ or in `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  brudcast_flutter: ^0.2.0
-  brudcast_push: ^0.2.0
+  brudcast_flutter: ^0.2.1
+  brudcast_push: ^0.2.1
   firebase_core: ^4.0.0
   firebase_messaging: ^16.0.0
 ```

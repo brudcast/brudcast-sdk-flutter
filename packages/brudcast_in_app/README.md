@@ -38,8 +38,8 @@ or in `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  brudcast_flutter: ^0.2.0
-  brudcast_in_app: ^0.2.0
+  brudcast_flutter: ^0.2.1
+  brudcast_in_app: ^0.2.1
 ```
 
 Set up [`brudcast_flutter`](https://pub.dev/packages/brudcast_flutter#getting-started), then add the
