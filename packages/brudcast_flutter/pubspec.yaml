@@ -1,6 +1,6 @@
 name: brudcast_flutter
 description: The Brudcast SDK for Flutter. Sessions, identity, events and deep link handling over the native Android and iOS SDKs.
-version: 0.2.0
+version: 0.2.1
 homepage: https://brudcast.com
 repository: https://github.com/brudcast/brudcast-sdk-flutter/tree/main/packages/brudcast_flutter
 issue_tracker: https://github.com/brudcast/brudcast-sdk-flutter/issues

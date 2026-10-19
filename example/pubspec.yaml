@@ -1,7 +1,7 @@
 name: brudcast_example
 description: The Brudcast Flutter example, built the way a customer app would use the SDK.
 publish_to: none
-version: 0.2.0+1
+version: 0.2.1+1
 
 resolution: workspace
 
@@ -10,9 +10,9 @@ environment:
   flutter: '>=3.44.0'
 
 dependencies:
-  brudcast_flutter: 0.2.0
-  brudcast_in_app: 0.2.0
-  brudcast_push: 0.2.0
+  brudcast_flutter: 0.2.1
+  brudcast_in_app: 0.2.1
+  brudcast_push: 0.2.1
   firebase_core: ^4.0.0
   firebase_messaging: ^16.0.0
   flutter:
