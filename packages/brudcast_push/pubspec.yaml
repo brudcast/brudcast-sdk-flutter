@@ -1,6 +1,6 @@
 name: brudcast_push
 description: Push notifications for the Brudcast Flutter SDK. Works alongside firebase_messaging and records opens with no Dart code.
-version: 0.2.1
+version: 0.2.2
 homepage: https://brudcast.com
 repository: https://github.com/brudcast/brudcast-sdk-flutter/tree/main/packages/brudcast_push
 issue_tracker: https://github.com/brudcast/brudcast-sdk-flutter/issues
@@ -17,7 +17,7 @@ environment:
   flutter: '>=3.44.0'
 
 dependencies:
-  brudcast_flutter: ^0.2.1
+  brudcast_flutter: ^0.2.2
   flutter:
     sdk: flutter
   meta: ^1.15.0
