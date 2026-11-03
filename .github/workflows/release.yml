@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Check out the code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       - name: Check the tag names the version every file names
         run: scripts/check-version.sh "${GITHUB_REF_NAME#v}"
